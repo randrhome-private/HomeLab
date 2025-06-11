@@ -1,0 +1,6 @@
+nextcloud:
+  enabled: true
+
+  persistance:
+    enabled: true
+    existingClaim: nextcloud-data
