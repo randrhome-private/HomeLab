@@ -1,6 +1,65 @@
-nextcloud:
-  enabled: true
+service:
+  type: NodePort
+  port: 8080         # This is the external service port (NodePort)
+  targetPort: 80     # This is the internal container port (fixes the mismatch)
+  nodePort: 30080    # This is the actual mapped port on the K3s node
 
-  persistance:
+
+nextcloud:
+  readinessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: 80
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: 80
+  host: 192.168.40.8
+  extraTrustedDomains:
+    - 192.168.40.8
+  username: nextcloud
+  password: changeme
+  updateStrategy: RollingUpdate
+  persistence:
     enabled: true
     existingClaim: nextcloud-data
+    accessMode: ReadWriteOnce
+    size: 100Gi
+  ingress:
+    enabled: false  # This is app-specific, not the real ingress
+
+internalDatabase:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: postgresql
+  host: nextcloud-db-postgresql:5432
+  database: nextcloud-postgresql
+  user: admin
+  password: g6a&dzJp7w!*@z1
+  existingSecret:
+    enabled: false
+
+postgresql:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: 15.4.0-debian-11-r10
+  global:
+    postgresql:
+      auth:
+        database: nextcloud-postgresql
+        username: admin
+        password: g6a&dzJp7w!*@z1
+        secretKeys:
+          adminPasswordKey: ''
+          userPasswordKey: ''
+          replicationPasswordKey: ''
+  primary:
+    persistence:
+      enabled: true
+      existingClaim: postgres-nextcloud-pvc
