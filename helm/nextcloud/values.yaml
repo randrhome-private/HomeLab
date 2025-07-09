@@ -33,6 +33,19 @@ phpClientHttpsFix:
   enabled: false
   protocol: https
 
+volumePermissions:
+  enabled: true
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 33
+
+
+podSecurityContext:
+    runAsUser: 33
+    runAsGroup: 33
+    fsGroup: 33
+    runAsNonRoot: true
+
 nextcloud:
   host: 192.168.40.8
   username: ricky
@@ -48,7 +61,6 @@ nextcloud:
     smtpHostKey: smtp-host
   update: 0
   containerPort: 80
-  datadir: /var/www/html/data
   persistence:
     enabled: true
     existingClaim: nextcloud-data
@@ -120,53 +132,6 @@ nextcloud:
     swift:
       enabled: false
 
-  defaultConfigs:
-    # To protect /var/www/html/config
-    .htaccess: true
-    # Apache configuration for rewrite urls
-    apache-pretty-urls.config.php: true
-    # Define APCu as local cache
-    apcu.config.php: true
-    # Apps directory configs
-    apps.config.php: true
-    # Used for auto configure database
-    autoconfig.php: true
-    # Redis default configuration
-    redis.config.php: true
-    # Reverse proxy default configuration
-    reverse-proxy.config.php: true
-    # S3 Object Storage as primary storage
-    s3.config.php: true
-    # SMTP default configuration via environment variables
-    smtp.config.php: true
-    # Swift Object Storage as primary storage
-    swift.config.php: true
-    # disables the web based updater as the default nextcloud docker image does not support it
-    upgrade-disable-web.config.php: true
-    # -- imaginary support config
-    imaginary.config.php: false
-
-  # Extra config files created in /var/www/html/config/
-  # ref: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
-  configs:
-    previews.config.php: |-
-      <?php
-      $CONFIG = array (
-        'enable_previews' => true,
-        'enabledPreviewProviders' => array (
-          'OC\Preview\Movie',
-          'OC\Preview\PNG',
-          'OC\Preview\JPEG',
-          'OC\Preview\GIF',
-          'OC\Preview\BMP',
-          'OC\Preview\XBitmap',
-          'OC\Preview\MP3',
-          'OC\Preview\MP4',
-          'OC\Preview\TXT',
-          'OC\Preview\MarkDown',
-          'OC\Preview\PDF'
-        ),
-      );
   # Hooks for auto configuration
   # Here you could write small scripts which are placed in `/docker-entrypoint-hooks.d/<hook-name>/helm.sh`
   # ref: https://github.com/nextcloud/docker?tab=readme-ov-file#auto-configuration-via-hook-folders
@@ -182,47 +147,12 @@ nextcloud:
   ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
   strategy:
     type: Recreate
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxSurge: 1
-    #   maxUnavailable: 0
 
-  ##
-  ## Extra environment variables
-  extraEnv:
-  #  - name: SOME_SECRET_ENV
-  #    valueFrom:
-  #      secretKeyRef:
-  #        name: nextcloud
-  #        key: secret_key
+  datadir: /var/www/html/data
 
-
-  securityContext: {
-  #   runAsUser: 33
-  #   runAsGroup: 33
-    runAsNonRoot: false
-  #   readOnlyRootFilesystem: false
-  }
-  # Set securityContext parameters for the entire pod. For example, you may need to define runAsNonRoot directive
-  podSecurityContext: {
-  #   runAsUser: 33
-  #   runAsGroup: 33
-    runAsNonRoot: false
-  #   readOnlyRootFilesystem: false
-  }
-  # Settings for the MariaDB init container
-  mariaDbInitContainer:
-    resources: {}
-    # Set mariadb initContainer securityContext parameters. For example, you may need to define runAsNonRoot directive
-    securityContext: {}
-
-  # Settings for the PostgreSQL init container
-  postgreSqlInitContainer:
-    resources: {}
-    # Set postgresql initContainer securityContext parameters. For example, you may need to define runAsNonRoot directive
-    securityContext: {}
-
-
+persistence:
+  enabled: true
+  existingClaim: nextcloud-data
 
 internalDatabase:
   enabled: false
@@ -302,53 +232,6 @@ cronjob:
   command:
   - /cron.sh
 
-
-## Enable persistence using Persistent Volume Claims
-## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-##
-persistence:
-  # Nextcloud Data (/var/www/html)
-  enabled: false
-  annotations: {}
-  ## nextcloud data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-
-  ## A manually managed Persistent Volume and Claim
-  ## Requires persistence.enabled: true
-  ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim:
-
-  accessMode: ReadWriteOnce
-  size: 8Gi
-
-  ## Use an additional pvc for the data directory rather than a subpath of the default PVC
-  ## Useful to store data on a different storageClass (e.g. on slower disks)
-  nextcloudData:
-    enabled: false
-    subPath:
-    annotations: {}
-    # storageClass: "-"
-    # existingClaim:
-    accessMode: ReadWriteOnce
-    size: 8Gi
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
 
 ## Liveness and readiness probe values
 ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes

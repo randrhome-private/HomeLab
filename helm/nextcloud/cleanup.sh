@@ -45,4 +45,8 @@ done
 kubectl delete pv postgres-nextcloud-pv
 kubectl delete pv nextcloud-data
 
+rm -r /mnt/data/nextcloud
+
+
+
 echo "✅ Cleanup complete."
