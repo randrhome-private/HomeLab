@@ -268,10 +268,10 @@ postgresql:
           replicationPasswordKey: ""
   primary:
     persistence:
-      enabled: false
-      # Use an existing Persistent Volume Claim (must be created ahead of time)
-      # existingClaim: ""
-      # storageClass: ""
+      enabled: true
+      existingClaim: postgres-nextcloud-pvc
+    podSecurityContext:
+      fsGroup: 1001
 
 
 
