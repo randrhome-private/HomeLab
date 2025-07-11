@@ -1,0 +1,105 @@
+image:
+    tag: v1.119.0
+immich:
+    metrics:
+        enabled: false
+    database:
+        host: ENC[AES256_GCM,data:aGKO6ysGq7LorXUfqZoG1JEdeg==,iv:tyyuvtBrn+W1KpVR9DObBu6fILc8ysB2l+CXObVp9xs=,tag:OYKPQNjn23lQzZ/tUTTCbQ==,type:str]
+        port: 5432
+        username: admin
+        password: ENC[AES256_GCM,data:9EIZ+OEd5Y6MCf3Swtkd,iv:gL7iKmA7CIqdjBeFc2oM+dxd5QyXUGslDRTYj8rO+iU=,tag:nCGtew/s3S3j6dVCPJ6AYg==,type:str]
+        database: immich
+        type: postgres
+        url: postgresql://admin:g6a&dzJp7w!*@z1@postgres-postgresql:5432/immich
+    persistence:
+        library:
+            enabled: true
+            existingClaim: immich-data
+            accessMode: ReadWriteMany
+            size: 1000Gi
+    configuration: {}
+# externalDatabase:
+#   enabled: true
+#   host: postgres-postgresql
+#   user: admin
+#   password: g6a&dzJp7w!*@z1
+#   database: immich
+redis:
+    enabled: true
+    architecture: standalone
+    auth:
+        enabled: false
+    master:
+        persistence:
+            enabled: false
+server:
+    enabled: true
+    image:
+        repository: ghcr.io/immich-app/immich-server
+        pullPolicy: IfNotPresent
+    controller:
+        containerPorts:
+            http: 2283
+        service:
+            enabled: true
+            type: NodePort
+            ports:
+                http:
+                    port: 2283
+                    nodePort: 31083
+    ingress:
+        main:
+            enabled: false
+            annotations:
+                nginx.ingress.kubernetes.io/proxy-body-size: "0"
+            hosts:
+                - host: ENC[AES256_GCM,data:w11bAPXxlHhwIcen,iv:bH0QMdGqDjolzbcqz1nFy++Rbc0B4zPNEVPYLy2BETI=,tag:Si/TfgQGJgGVRG5diD+amA==,type:str]
+                  paths:
+                    - path: /
+            tls: []
+    livenessProbe:
+        httpGet:
+            path: /server-info/ping
+            port: 2283
+    readinessProbe:
+        httpGet:
+            path: /server-info/ping
+            port: 2283
+    startupProbe:
+        httpGet:
+            path: /server-info/ping
+            port: 2283
+machine-learning:
+    enabled: true
+    image:
+        repository: ghcr.io/immich-app/immich-machine-learning
+        pullPolicy: IfNotPresent
+    env:
+        TRANSFORMERS_CACHE: /cache
+    persistence:
+        cache:
+            enabled: true
+            type: pvc
+            existingClaim: ml-cache-pvc
+            accessMode: ReadWriteOnce
+            size: 10Gi
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1h5cpazy9s7j7cmzpxjw4sxst9nk4y0lfyk62l2m4tluvkg5dk9yqw4xalx
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAwa0htcUsvQ3dwKzZCanVP
+            NEZtMDY0eVJYYi9QY1drYmpIcDU4WXNtM2pFCllqUlV5cGNVL3BweEEzMFVBRGla
+            Y0Q4QUFUSW45VXRnMXgrVGluRnRXUU0KLS0tIDBOdU1TT21IRlN5MjRTa1JSaUVl
+            a1psaUltU0c4eFFZcnFPblpzNW52aXcKbc3YYx32iBIrNfX2GCyIZbkm4XKGhKf2
+            8rwRgCKQXf+V756MwlopUIoWj5Eoa5UH/CUelTbFsl7O6iayAx9n2g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-07-11T09:59:45Z"
+    mac: ENC[AES256_GCM,data:+CDoVQLMB2ORorRvN2qSJBmVSXm2438I4N0DfY79gzZL/7y3BWvHB1T5beD1909k8VIvI5SNazpvFJT2SW881AoDDNNqdAEKmADX+5xdZjURwle9NP9HX1PwkfwZF1+772Bvv4Z2tZ0QHkzFmEJD/zO1MqT7aQireLUhWkVZu5E=,iv:ecZaWHsJ9ECWOauf4huksBQCe1MkE5wvvcH/X+SLQ/E=,tag:0sn3VGSONxxKb5JSbCzbbQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(domain|API_KEY|AUTH_KEY|password|secret|token|key|trustedDomains|name|host|accessKey|secretKey)$
+    version: 3.8.1

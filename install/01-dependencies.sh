@@ -38,6 +38,10 @@ fi
 apt-get update -qq
 apt-get install -y --no-install-recommends curl tar gzip ca-certificates age
 
+echo "[*] Installing yamllint..."
+sudo apt install -y yamllint
+
+
 echo "[*] Installing sops..."
 curl -sL -H "User-Agent: curl" \
   "https://github.com/mozilla/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64" \

@@ -1,0 +1,54 @@
+postgresql:
+    enabled: true
+    auth:
+        username: admin
+        password: ENC[AES256_GCM,data:ykPNXzj4vWPxzPpvE+vE,iv:/lzwWzIgZijsXsIk9ccESggwEgwda2gIaPZ3/6cw6GA=,tag:iOQm7VsbSbZNEbas841OXg==,type:str]
+        database: immich
+        # Optional: remove these if not using external secrets
+        existingSecret: ""
+        secretKeys:
+            adminPasswordKey: ""
+            userPasswordKey: ""
+            replicationPasswordKey: ""
+    image:
+        registry: ghcr.io
+        repository: immich-app/postgres
+        tag: 16-vectorchord1.0.0-pgvectors0.7.0
+        pullPolicy: IfNotPresent
+    primary:
+        persistence:
+            enabled: true
+            existingClaim: postgres-immich-pvc
+            storageClass: ""
+        podSecurityContext:
+            fsGroup: 1001
+        containerSecurityContext:
+            readOnlyRootFilesystem: false
+        extendedConfiguration: |
+            shared_preload_libraries = 'vchord'
+        initdb:
+            scripts:
+                create-extensions.sql: |
+                    CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+                    CREATE EXTENSION IF NOT EXISTS pg_trgm;
+                    CREATE EXTENSION IF NOT EXISTS earthdistance;
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1h5cpazy9s7j7cmzpxjw4sxst9nk4y0lfyk62l2m4tluvkg5dk9yqw4xalx
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBUNjdnQWp4WnhFN2NiSFRM
+            R2dwN1N4ZlhpMVV4dXUrY0hpNkNHWGViRUdrCmluUmVrQWVSR2FuWEFzODdMeTlp
+            SmtEUStlSGY1TXhUSFhYM2ZqaktUaUkKLS0tIEtWTmhsY0Z5bTVmc0h2Y2JvWFJw
+            VjlNbVFYc1ViUHVsOUQ3NERlTTJVcWsKDKwFGfytBeoM9IEecw7D7JY8A6/2kFBH
+            RkPTb9IwA3yLyOuyf7/1ou+BEGkXCSuHGjapRMWlCZus6U9MaziCVA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-07-11T10:00:07Z"
+    mac: ENC[AES256_GCM,data:QN713jGiGfPCmSB61SFSc1um2c3hC/HHQp3AyxP+hhph4DA7XF+a608bW3RDBARJ4xronw0knwD4Hl8kYbJBjjWeCMWaQiHxXY2Esd0PtFMHJuMlygHafy+0C2BHeJjdOnDSnt3+5k4xUOQAUJBQ0cgXkTFrJFASL4iF3382OMI=,iv:1T1H6/eeO4uGNfj0ptXVvN/qBMEbt7ngJ17Oi2wWW2Q=,tag:RcMnzEfJrrmLrQCNaHqorQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(domain|API_KEY|AUTH_KEY|password|secret|token|key|trustedDomains|name|host|accessKey|secretKey)$
+    version: 3.8.1
