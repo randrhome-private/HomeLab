@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-immich-pv
+  name: immich-postgres
 spec:
   capacity:
-    storage: 200Gi
+    storage: 10Gi                       # Adjust size as needed for the database
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: ""
+  persistentVolumeReclaimPolicy: Retain # Retain data if the claim is deleted
+  storageClassName: ""                  # No storage class (binding by explicit volumeName)
   hostPath:
-    path: /mnt/data/immich/postgres
+    path: /mnt/immich/postgres          # Host path for Postgres data
+    type: DirectoryOrCreate
