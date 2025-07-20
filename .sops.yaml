@@ -1,4 +1,4 @@
 creation_rules:
   - age: age1h5cpazy9s7j7cmzpxjw4sxst9nk4y0lfyk62l2m4tluvkg5dk9yqw4xalx
-    encrypted_regex: '^(domain|API_KEY|AUTH_KEY|password|secret|token|key|trustedDomains|name|host|accessKey|secretKey)$'
+    encrypted_regex: '^(DB_PASSWORD|DB_USERNAME|domain|API_KEY|AUTH_KEY|password|secret|token|key|trustedDomains|name|host|accessKey|secretKey)$'
 

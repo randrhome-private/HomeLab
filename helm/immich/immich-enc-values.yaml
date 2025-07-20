@@ -1,0 +1,48 @@
+postgresql:
+    enabled: false
+redis:
+    enabled: true
+    architecture: standalone
+    auth:
+        enabled: false
+    master:
+        persistence:
+            enabled: false
+env:
+    DB_HOSTNAME: immich-postgres-rw.immich.svc.cluster.local
+    DB_USERNAME: ENC[AES256_GCM,data:MkRDMR56,iv:QbGhlIIqOVGvxoYKdMwJVIWbAal/AWFQ7FFl/qCiwlM=,tag:XQh8iWxWjN9xZ9xdWYmm5w==,type:str]
+    DB_DATABASE_NAME: immich
+    DB_PASSWORD: ENC[AES256_GCM,data:GRcx915z2JUDg9RPBwU9,iv:I7Opt+mR9ySsLs5pg5Q5y61zVqf9IACllxxj3xMvln8=,tag:rmc+IS1RQNFodtosjt46Xw==,type:str]
+immich:
+    persistence:
+        enabled: true
+        library:
+            existingClaim: immich-library-pvc
+    ingress:
+        enabled: false
+    database:
+        host: ENC[AES256_GCM,data:cGdokiOveTyyRdRBf/EKOOAJtMSruJYxkpXSuakP0kSK36MYu3ZMfY5gvg==,iv:wHqPNb2q2X+cT+CZbq42etGXsH95SDfogwEdDyt1qNg=,tag:ohKWgv1aXbHVE/rxXBZ/CQ==,type:str]
+        port: 5432
+        username: immich
+        password: ENC[AES256_GCM,data:b5IrNsYqohG7xvP0XjTd,iv:V7U0nx6L0BzY9Y+fJE5WEu7XYwMyAfs6FHHCSJRX+rg=,tag:7AnLJVEZ/SUJJj3ZEdhyzg==,type:str]
+        databaseName: immich
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1h5cpazy9s7j7cmzpxjw4sxst9nk4y0lfyk62l2m4tluvkg5dk9yqw4xalx
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBHSFJvaklhbE4vWlg4Mko5
+            V0hKZkpYVVlVRnA3aWxOaTdjc3dxQW11UUVRCnM2QTlLSEg0ZGxyNHR1Y1Q0dGtH
+            UTRrR3VPdlZheHgrTU1LcGEvcFBKQWcKLS0tIGJBdGJXSnljdk1WVElLM3VZcUJs
+            SWtOTjhLbUI0SWh4dGFUSUNBOExHM2sKTSha9Adf+N5tpXyQCf5kbVBtXenxukTq
+            Xoqy+ttdNXutFWCfKU9Qf5xPissOrcwqN4YxH8/BDy7s2WwPuQ7W8g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-07-20T04:14:24Z"
+    mac: ENC[AES256_GCM,data:KGZIuzORcLEHMmPw1G7LkX70XPPsJdCcAPhkeXOFzVI75q0HRM/opWagLCB+CxCVR9ruUzyRgvLth5RuAGablEfZRXBbrlJBt3tf4SzsK/nqzgEH+yrANlNm9tj+j7/QVeH6/EbMNdBWmhUiMkdIjAmDyb0CI03kR7ijKZmms6o=,iv:VwrEGNA+LbEgzUouRAtLMwlkyKfVsRAyzqh+ciZ4rSI=,tag:C5/6qRgSq5HX+Xc9Jsug5w==,type:str]
+    pgp: []
+    encrypted_regex: ^(DB_PASSWORD|DB_USERNAME|domain|API_KEY|AUTH_KEY|password|secret|token|key|trustedDomains|name|host|accessKey|secretKey)$
+    version: 3.8.1

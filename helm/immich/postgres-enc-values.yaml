@@ -1,0 +1,49 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+    name: ENC[AES256_GCM,data:cgzEnYnHrh9ZlnEQ526F,iv:PWnhI7FInVpOOMQOTMUXVKvhCc+2iIp8jSGDc1B1VWs=,tag:H3hihFjf9/sTYyIlHZA9yg==,type:str]
+    namespace: immich
+spec:
+    imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.5-v0.3.0
+    instances: 1
+    postgresql:
+        shared_preload_libraries:
+            - vectors.so
+    managed:
+        roles:
+            - name: ENC[AES256_GCM,data:9vUnf2ah,iv:+P3s7pl4mtz7e3PiLJGReHCnASOXDLjoh+JWGiMkn30=,tag:MizbRnAtTAsBEW3Gd2uLuA==,type:str]
+              superuser: true
+              login: true
+    bootstrap:
+        initdb:
+            database: immich
+            owner: immich
+            secret:
+                name: ENC[AES256_GCM,data:LdAkfH6eTDF+9GfFI/nVx2c+otE=,iv:ZYiTFVO5k4N3Q4QG/NMoc8AfQwdgqEX9/ZVbipNRZjk=,tag:oqG4kg99ao/1ZZRB+fvmLQ==,type:str]
+            postInitSQL:
+                - CREATE EXTENSION IF NOT EXISTS "vectors";
+                - CREATE EXTENSION IF NOT EXISTS "cube" CASCADE;
+                - CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
+    storage:
+        size: 20Gi
+        storageClass: local-path
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1h5cpazy9s7j7cmzpxjw4sxst9nk4y0lfyk62l2m4tluvkg5dk9yqw4xalx
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBDWHRVb1kwckdqbFZ0TmUv
+            OERzSTFNUGQySU5HL09HSGw1SWdZMzlDTVhZCng5UHZvWXFwekYrSE92OW85aG9T
+            cTJhbEZ4dmNjVFVtRUlkUTNsWncvWk0KLS0tIHdveG8zS2tOeU5teER0L1c3M1lo
+            OHU5ekFjTHlWR29ybEJEOWFTNkprWUUKu4P+yK4uwby9e3SRvTiMpCq1NbI2Qo+/
+            0mRI43ZmW7ZAfw8I11+kyOKWUeQT0W4v9sLh6E2WC7PPLKR0mkLSvA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-07-20T04:10:51Z"
+    mac: ENC[AES256_GCM,data:w9+QGflunqQ7wo37jRl5kO9n3E8r/uMeja8siIfBA7+PVVGfr8YjBxuWnjGey+607amZDmMckL8n/7PvgxUuU2DEqMPcas2qzjiXLVtz/n1hXULNpPO3RGuGCW1GfgAfMZYfvVIrvcYJCZYv41L0zVfFHkqUsfrNgQa8N6sMcV0=,iv:MAujNi3TMntmOruc7VVjF8+KL9CbtnxRf2FlNnJADiQ=,tag:4Y5vFANMV198TmlCzoMxjA==,type:str]
+    pgp: []
+    encrypted_regex: ^(domain|API_KEY|AUTH_KEY|password|secret|token|key|trustedDomains|name|host|accessKey|secretKey)$
+    version: 3.8.1
